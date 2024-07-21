@@ -4,6 +4,8 @@
 node_modules
 .pnp
 .pnp.js
+Dockerfile
+.dockerignore
 
 # testing
 coverage
