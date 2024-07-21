@@ -1,7 +1,10 @@
 import { io } from 'socket.io-client';
 
 // "undefined" means the URL will be computed from the `window.location` object
-const URL = process.env.NODE_ENV === 'production' ? undefined : 'ws://localhost:3000/admin';
+const URL =
+  import.meta.env.NODE_ENV === 'production'
+    ? undefined
+    : `${import.meta.env.VITE_ADMIN_API_ROUTE}/admin`;
 
 export const getSocket = (authToken, name) =>
   io(URL || '', {
