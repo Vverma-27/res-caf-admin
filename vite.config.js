@@ -26,6 +26,10 @@ export default defineConfig({
       },
     ],
   },
+  build: {
+    minify: false,
+    sourcemap: false,
+  },
   server: {
     port: 3030,
   },

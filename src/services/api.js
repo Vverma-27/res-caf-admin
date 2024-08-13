@@ -59,7 +59,7 @@ export const getVendorDetails = async (details) => {
 
 export const getStatus = async (token) => {
   const authtoken = auth.currentUser?.accessToken;
-  console.log('🚀 ~ getStatus ~ authtoken:', authtoken);
+  console.log('🚀 ~ getStatus ~ authtoken:', import.meta.env.PROD);
   const res = await (
     await fetch(
       `${
