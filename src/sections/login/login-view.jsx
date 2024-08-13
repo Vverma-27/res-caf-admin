@@ -1,11 +1,12 @@
-import { useState } from 'react';
+import { useState, useContext } from 'react';
+import { signInWithEmailAndPassword } from 'firebase/auth';
 
 import Box from '@mui/material/Box';
 import Link from '@mui/material/Link';
 import Card from '@mui/material/Card';
 import Stack from '@mui/material/Stack';
-import Button from '@mui/material/Button';
-import Divider from '@mui/material/Divider';
+// import Button from '@mui/material/Button';
+// import Divider from '@mui/material/Divider';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
@@ -16,7 +17,10 @@ import InputAdornment from '@mui/material/InputAdornment';
 import { useRouter } from 'src/routes/hooks';
 import { RouterLink } from 'src/routes/components';
 
+import { MyContext } from 'src/Context';
 import { bgGradient } from 'src/theme/css';
+import { auth } from 'src/services/firebase';
+import { getStatus } from 'src/services/api';
 
 import Logo from 'src/components/logo';
 import Iconify from 'src/components/iconify';
@@ -28,20 +32,41 @@ export default function LoginView() {
 
   const router = useRouter();
 
+  const { setLoading, setStatus } = useContext(MyContext);
   const [showPassword, setShowPassword] = useState(false);
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
 
-  const handleClick = () => {
-    router.push('/dashboard');
+  const handleClick = async (e) => {
+    e.preventDefault();
+    try {
+      const fbResponse = await signInWithEmailAndPassword(auth, email, password);
+      console.log('🚀 ~ handleSubmit ~ fbResponse:', fbResponse);
+      setLoading(true);
+      const { status } = await getStatus(fbResponse.user.accessToken);
+      setStatus(status);
+      setLoading(false);
+      router.push('/dashboard');
+    } catch (error) {
+      alert(error.message);
+    }
   };
 
   const renderForm = (
     <>
       <Stack spacing={3}>
-        <TextField name="email" label="Email address" />
+        <TextField
+          name="email"
+          label="Email address"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+        />
 
         <TextField
           name="password"
           label="Password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
           type={showPassword ? 'text' : 'password'}
           InputProps={{
             endAdornment: (
@@ -104,12 +129,12 @@ export default function LoginView() {
 
           <Typography variant="body2" sx={{ mt: 2, mb: 5 }}>
             Don’t have an account?
-            <Link variant="subtitle2" sx={{ ml: 0.5 }} component={RouterLink}  href="/register">
+            <Link variant="subtitle2" sx={{ ml: 0.5 }} component={RouterLink} href="/register">
               Get started
             </Link>
           </Typography>
 
-          <Stack direction="row" spacing={2}>
+          {/* <Stack direction="row" spacing={2}>
             <Button
               fullWidth
               size="large"
@@ -145,7 +170,7 @@ export default function LoginView() {
             <Typography variant="body2" sx={{ color: 'text.secondary' }}>
               OR
             </Typography>
-          </Divider>
+          </Divider> */}
 
           {renderForm}
         </Card>

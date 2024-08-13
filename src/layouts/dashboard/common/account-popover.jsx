@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { signOut } from 'firebase/auth';
+import { useState, useContext } from 'react';
 
 import Box from '@mui/material/Box';
 import Avatar from '@mui/material/Avatar';
@@ -9,7 +10,11 @@ import MenuItem from '@mui/material/MenuItem';
 import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
 
+import { useRouter } from 'src/routes/hooks';
+
+import { MyContext } from 'src/Context';
 import { account } from 'src/_mock/account';
+import { auth } from 'src/services/firebase';
 
 // ----------------------------------------------------------------------
 
@@ -32,6 +37,8 @@ const MENU_OPTIONS = [
 
 export default function AccountPopover() {
   const [open, setOpen] = useState(null);
+  const { setStatus } = useContext(MyContext);
+  const router = useRouter();
 
   const handleOpen = (event) => {
     setOpen(event.currentTarget);
@@ -105,7 +112,14 @@ export default function AccountPopover() {
         <MenuItem
           disableRipple
           disableTouchRipple
-          onClick={handleClose}
+          onClick={async () => {
+            console.log('🚀 ~ AccountPopover ~ onClick ~ signOut');
+            const res = await signOut(auth);
+            console.log('🚀 ~ onClick={ ~ res:', res);
+            setStatus(0);
+            handleClose();
+            router.push('/login');
+          }}
           sx={{ typography: 'body2', color: 'error.main', py: 1.5 }}
         >
           Logout
