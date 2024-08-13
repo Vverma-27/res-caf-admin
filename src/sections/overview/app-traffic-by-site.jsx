@@ -6,8 +6,6 @@ import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
 import CardHeader from '@mui/material/CardHeader';
 
-import { fShortenNumber } from 'src/utils/format-number';
-
 // ----------------------------------------------------------------------
 
 export default function AppTrafficBySite({ title, subheader, list, ...other }) {
@@ -31,7 +29,7 @@ export default function AppTrafficBySite({ title, subheader, list, ...other }) {
           >
             <Box sx={{ mb: 0.5 }}>{site.icon}</Box>
 
-            <Typography variant="h6">{fShortenNumber(site.value)}</Typography>
+            <Typography variant="h6">{site.value}</Typography>
 
             <Typography variant="body2" sx={{ color: 'text.secondary' }}>
               {site.name}

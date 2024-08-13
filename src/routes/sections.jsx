@@ -7,10 +7,10 @@ import { getSocket } from 'src/services/socket';
 import DashboardLayout from 'src/layouts/dashboard';
 
 export const IndexPage = lazy(() => import('src/pages/app'));
-export const BlogPage = lazy(() => import('src/pages/blog'));
+// export const BlogPage = lazy(() => import('src/pages/blog'));
 export const UserPage = lazy(() => import('src/pages/user'));
 export const LoginPage = lazy(() => import('src/pages/login'));
-export const ProductsPage = lazy(() => import('src/pages/products'));
+// export const ProductsPage = lazy(() => import('src/pages/products'));
 export const OnboardingPage = lazy(() => import('src/pages/onboarding'));
 export const MenuPage = lazy(() => import('src/pages/menu'));
 export const Page404 = lazy(() => import('src/pages/page-not-found'));
@@ -56,12 +56,12 @@ export default function Router({ status, name }) {
       ),
       children: [
         { element: <IndexPage />, index: true },
-        { path: 'user', element: <UserPage /> },
+        // { path: 'user', element: <UserPage /> },
         { path: 'profile', element: <ProfilePage /> },
         { path: 'payments', element: <PaymentPage /> },
-        { path: 'products', element: <ProductsPage /> },
+        // { path: 'products', element: <ProductsPage /> },
         { path: 'menu', element: <MenuPage /> },
-        { path: 'blog', element: <BlogPage /> },
+        // { path: 'blog', element: <BlogPage /> },
       ],
     },
   ];
