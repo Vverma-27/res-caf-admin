@@ -33,8 +33,8 @@ const navConfig = [
     icon: icon('ic_payments'),
   },
   {
-    title: 'Not found',
-    path: '/404',
+    title: 'Orders',
+    path: '/orders',
     icon: icon('ic_disabled'),
   },
 ];

@@ -15,9 +15,34 @@ const MyProvider = ({ children }) => {
   const [firstLoad, setFirstLoad] = useState(true);
   const [socket, setSocket] = useState();
   const [loading, setLoading] = useState(false);
+  const [orders, setOrders] = useState([]);
   const contextValue = useMemo(
-    () => ({ menu, detail, firstLoad, status, setStatus, loading, setLoading, socket, setSocket }),
-    [menu, detail, firstLoad, status, setStatus, loading, setLoading, socket, setSocket]
+    () => ({
+      menu,
+      detail,
+      firstLoad,
+      status,
+      setStatus,
+      loading,
+      setLoading,
+      socket,
+      setSocket,
+      orders,
+      setOrders,
+    }),
+    [
+      menu,
+      detail,
+      firstLoad,
+      status,
+      setStatus,
+      loading,
+      setLoading,
+      socket,
+      setSocket,
+      orders,
+      setOrders,
+    ]
   );
 
   useEffect(() => {

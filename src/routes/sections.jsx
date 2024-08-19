@@ -17,26 +17,43 @@ export const Page404 = lazy(() => import('src/pages/page-not-found'));
 export const RegisterPage = lazy(() => import('src/pages/register'));
 export const PaymentPage = lazy(() => import('src/pages/payment'));
 export const ProfilePage = lazy(() => import('src/pages/profile'));
+export const OrdersPage = lazy(() => import('src/pages/orders'));
 
 // ----------------------------------------------------------------------
 
 export default function Router({ status, name }) {
   const [authToken, setAuthToken] = useState(null);
-  const { setSocket } = useContext(MyContext);
+  const { setSocket, setOrders } = useContext(MyContext);
 
   useEffect(() => {
     async function fetchAuthToken() {
       if (status !== 3) return;
       try {
         const token = await auth.currentUser?.getIdToken();
+        if (!token) return;
         setAuthToken(token);
         const socketConnection = getSocket(authToken, name);
+        if (!socketConnection) return;
         socketConnection.connect();
         socketConnection.on('connect', () => {
           setSocket(socketConnection);
           console.log('Connected to server');
         });
-
+        socketConnection.on('new-order', (order) => {
+          setOrders((prevOrders) => [...prevOrders, order]);
+        });
+        socketConnection.on('order-transaction', ({ orderID, remainingAmount }) =>
+          setOrders((prevOrders) =>
+            prevOrders.map((order) => {
+              if (order.orderID === orderID)
+                return {
+                  ...order,
+                  remainingAmount,
+                };
+              return order;
+            })
+          )
+        );
         // Use socket and token as needed
       } catch (error) {
         console.error('Error fetching auth token:', error);
@@ -44,7 +61,7 @@ export default function Router({ status, name }) {
     }
 
     fetchAuthToken();
-  }, [status, authToken, name, setSocket]);
+  }, [status, authToken, name, setSocket, setOrders]);
   const dashboardRoutes = [
     {
       element: (
@@ -59,6 +76,7 @@ export default function Router({ status, name }) {
         // { path: 'user', element: <UserPage /> },
         { path: 'profile', element: <ProfilePage /> },
         { path: 'payments', element: <PaymentPage /> },
+        { path: 'orders', element: <OrdersPage /> },
         // { path: 'products', element: <ProductsPage /> },
         { path: 'menu', element: <MenuPage /> },
         // { path: 'blog', element: <BlogPage /> },

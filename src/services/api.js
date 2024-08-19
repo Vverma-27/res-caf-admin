@@ -57,6 +57,24 @@ export const getVendorDetails = async (details) => {
   return res.response;
 };
 
+export const getOrders = async (details) => {
+  const authtoken = auth.currentUser?.accessToken;
+  const res = await (
+    await fetch(
+      `${
+        import.meta.env.PROD ? 'https://admin.api.resandcaf.online' : config.VITE_ADMIN_API_ROUTE
+      }/restaurant/orders`,
+      {
+        method: 'GET',
+        headers: {
+          authtoken,
+        },
+      }
+    )
+  ).json();
+  return res.orders;
+};
+
 export const getStatus = async (token) => {
   const authtoken = auth.currentUser?.accessToken;
   console.log('🚀 ~ getStatus ~ authtoken:', import.meta.env.PROD);
