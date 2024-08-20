@@ -28,7 +28,7 @@ const Orders = () => {
   return (
     <div style={{ padding: '0 2vw', height: '100%' }}>
       <h1 style={{ fontSize: '1.25rem', fontWeight: 'bold', marginBottom: '1rem' }}>Orders</h1>
-      {groupedOrders.length > 0 ? (
+      {Object.entries(groupedOrders) > 0 ? (
         <div
           style={{
             display: 'grid',
