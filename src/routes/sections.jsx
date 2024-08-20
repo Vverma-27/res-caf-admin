@@ -73,7 +73,7 @@ export default function Router({ status, name }) {
       ),
       children: [
         { element: <IndexPage />, index: true },
-        // { path: 'user', element: <UserPage /> },
+        { path: 'user', element: <UserPage /> },
         { path: 'profile', element: <ProfilePage /> },
         { path: 'payments', element: <PaymentPage /> },
         { path: 'orders', element: <OrdersPage /> },

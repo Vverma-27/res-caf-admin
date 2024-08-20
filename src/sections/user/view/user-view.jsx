@@ -37,15 +37,14 @@ export default function UserPage() {
   const [filterName, setFilterName] = useState('');
 
   const [rowsPerPage, setRowsPerPage] = useState(5);
-  useEffect(
-    () =>
-      (async () => {
-        const { clients: clientsArg } = await getClients();
-        console.log('🚀 ~ useEffect ~ clients:', clientsArg);
-        setClients(clientsArg);
-      })(),
-    []
-  );
+  useEffect(() => {
+    const func = async () => {
+      const { clients: clientsArg } = await getClients(page, rowsPerPage);
+      console.log('🚀 ~ useEffect ~ clients:', clientsArg);
+      setClients(clientsArg);
+    };
+    func();
+  }, [page, rowsPerPage]);
 
   const handleSort = (event, id) => {
     const isAsc = orderBy === id && order === 'asc';
@@ -140,6 +139,7 @@ export default function UserPage() {
                       name={row.name}
                       number={row.number}
                       handleClick={handleClick}
+                      email={row.email}
                     />
                   ))}
 

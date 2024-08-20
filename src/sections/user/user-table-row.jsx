@@ -12,11 +12,7 @@ import Iconify from 'src/components/iconify';
 
 // ----------------------------------------------------------------------
 
-export default function UserTableRow({
-  name,
-  handleClick,
-  number
-}) {
+export default function UserTableRow({ name, handleClick, number, email }) {
   const [open, setOpen] = useState(null);
 
   const handleCloseMenu = () => {
@@ -25,15 +21,16 @@ export default function UserTableRow({
 
   return (
     <>
-      <TableRow hover tabIndex={-1} role="checkbox" >
-        <TableCell component="th" scope="row" padding="none" sx={{padding:"16px"}}>
+      <TableRow hover tabIndex={-1} role="checkbox">
+        <TableCell component="th" scope="row" padding="none" sx={{ padding: '16px' }}>
           <Stack direction="row" alignItems="center" spacing={2}>
             <Typography variant="subtitle2" noWrap>
               {name}
             </Typography>
           </Stack>
         </TableCell>
-        <TableCell sx={{padding:"16px"}}>{number}</TableCell>
+        <TableCell sx={{ padding: '16px' }}>{number}</TableCell>
+        <TableCell sx={{ padding: '16px' }}>{email}</TableCell>
       </TableRow>
 
       <Popover

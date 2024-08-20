@@ -57,7 +57,7 @@ export const getVendorDetails = async (details) => {
   return res.response;
 };
 
-export const getOrders = async (details) => {
+export const getOrders = async () => {
   const authtoken = auth.currentUser?.accessToken;
   const res = await (
     await fetch(
@@ -73,6 +73,24 @@ export const getOrders = async (details) => {
     )
   ).json();
   return res.orders;
+};
+
+export const setDishCompleted = async (id) => {
+  const authtoken = auth.currentUser?.accessToken;
+  const res = await (
+    await fetch(
+      `${
+        import.meta.env.PROD ? 'https://admin.api.resandcaf.online' : config.VITE_ADMIN_API_ROUTE
+      }/restaurant/completed/orders/${id}`,
+      {
+        method: 'PUT',
+        headers: {
+          authtoken,
+        },
+      }
+    )
+  ).json();
+  return res;
 };
 
 export const getStatus = async (token) => {
@@ -195,13 +213,13 @@ export const setDishUnavailable = async (dishId, catId, available) => {
   return res;
 };
 
-export const getClients = async () => {
+export const getClients = async (page, rowsPerPage) => {
   const authtoken = await auth.currentUser?.getIdToken();
   const res = await (
     await fetch(
       `${
         import.meta.env.PROD ? 'https://admin.api.resandcaf.online' : config.VITE_ADMIN_API_ROUTE
-      }/restaurant/clients`,
+      }/restaurant/clients?page=${page}&limit=${rowsPerPage}`,
       {
         method: 'GET',
         headers: {
