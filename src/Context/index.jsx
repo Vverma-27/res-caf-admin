@@ -3,7 +3,7 @@ import { onAuthStateChanged } from 'firebase/auth';
 import { useMemo, useState, useEffect, createContext } from 'react';
 
 import { auth } from '../services/firebase';
-import { getStatus } from '../services/api';
+import { getStatus, getEmployee } from '../services/api';
 
 export const MyContext = createContext();
 
@@ -16,6 +16,8 @@ const MyProvider = ({ children }) => {
   const [socket, setSocket] = useState();
   const [loading, setLoading] = useState(false);
   const [orders, setOrders] = useState([]);
+  const [currEmp, setCurrEmp] = useState(null);
+  const [role, setRole] = useState('');
   const contextValue = useMemo(
     () => ({
       menu,
@@ -29,6 +31,8 @@ const MyProvider = ({ children }) => {
       setSocket,
       orders,
       setOrders,
+      currEmp,
+      role,
     }),
     [
       menu,
@@ -39,9 +43,11 @@ const MyProvider = ({ children }) => {
       loading,
       setLoading,
       socket,
+      currEmp,
       setSocket,
       orders,
       setOrders,
+      role,
     ]
   );
 
@@ -52,10 +58,14 @@ const MyProvider = ({ children }) => {
           status: statusArg,
           menu: menuArg,
           details: detailArg,
+          role: roleArg,
         } = await getStatus(user.accessToken);
+        const { employee: currEmpArg } = await getEmployee(user.accessToken);
         console.log('🚀 ~ fetchStatus ~ statusArg:', statusArg);
         if (menuArg) setMenu(menuArg);
         if (detailArg) setDetail(detailArg);
+        if (roleArg) setRole(roleArg);
+        if (currEmpArg) setCurrEmp(currEmpArg);
         setStatus(() => {
           setFirstLoad(false);
           return statusArg;

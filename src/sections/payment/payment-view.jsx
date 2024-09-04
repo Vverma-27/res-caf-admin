@@ -33,7 +33,10 @@ const PaymentView = () => {
     const fetchVendorDetails = async () => {
       try {
         const res = await getVendorDetails();
-        setVendorDetails(res);
+        console.log('🚀 ~ fetchVendorDetails ~ res:', res);
+        if (res.code === 404) {
+          alert("You haven't added bank details yet. Please add them now.");
+        } else setVendorDetails(res.response);
       } catch (error) {
         console.error('Error fetching vendor details:', error);
       }

@@ -1,8 +1,7 @@
-import PropTypes from 'prop-types';
-
+import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
 import CardHeader from '@mui/material/CardHeader';
-import { styled, useTheme } from '@mui/material/styles';
+import { styled, Select, useTheme, MenuItem, InputLabel, FormControl } from '@mui/material';
 
 import Chart, { useChart } from 'src/components/chart';
 
@@ -26,7 +25,7 @@ const StyledChart = styled(Chart)(({ theme }) => ({
 
 // ----------------------------------------------------------------------
 
-export default function AppCurrentVisits({ title, subheader, chart, ...other }) {
+export default function AppCurrentVisits({ title, subheader, chart, type, setType, ...other }) {
   const theme = useTheme();
 
   const { colors, series, options } = chart;
@@ -78,7 +77,26 @@ export default function AppCurrentVisits({ title, subheader, chart, ...other }) 
 
   return (
     <Card {...other}>
-      <CardHeader title={title} subheader={subheader} sx={{ mb: 5 }} />
+      <CardHeader
+        title={title}
+        subheader={
+          <Box sx={{ display: 'flex', alignItems: 'center' }}>
+            <FormControl sx={{ mr: 2, minWidth: 120 }}>
+              <InputLabel id="timespan-select-label">Distribute by</InputLabel>
+              <Select
+                labelId="timespan-select-label"
+                value={type}
+                onChange={(e) => setType(e.target.value)}
+                label="Time Span"
+              >
+                <MenuItem value="dish">Dish</MenuItem>
+                <MenuItem value="category">Category</MenuItem>
+                <MenuItem value="veg">Vegan</MenuItem>
+              </Select>
+            </FormControl>
+          </Box>
+        }
+      />
 
       <StyledChart
         dir="ltr"
@@ -91,9 +109,3 @@ export default function AppCurrentVisits({ title, subheader, chart, ...other }) 
     </Card>
   );
 }
-
-AppCurrentVisits.propTypes = {
-  chart: PropTypes.object,
-  subheader: PropTypes.string,
-  title: PropTypes.string,
-};

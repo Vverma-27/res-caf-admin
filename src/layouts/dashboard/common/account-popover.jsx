@@ -13,31 +13,30 @@ import IconButton from '@mui/material/IconButton';
 import { useRouter } from 'src/routes/hooks';
 
 import { MyContext } from 'src/Context';
-import { account } from 'src/_mock/account';
 import { auth } from 'src/services/firebase';
 
 // ----------------------------------------------------------------------
 
-const MENU_OPTIONS = [
-  {
-    label: 'Home',
-    icon: 'eva:home-fill',
-  },
-  {
-    label: 'Profile',
-    icon: 'eva:person-fill',
-  },
-  {
-    label: 'Settings',
-    icon: 'eva:settings-2-fill',
-  },
-];
+// const MENU_OPTIONS = [
+//   {
+//     label: 'Home',
+//     icon: 'eva:home-fill',
+//   },
+//   {
+//     label: 'Profile',
+//     icon: 'eva:person-fill',
+//   },
+//   {
+//     label: 'Settings',
+//     icon: 'eva:settings-2-fill',
+//   },
+// ];
 
 // ----------------------------------------------------------------------
 
 export default function AccountPopover() {
   const [open, setOpen] = useState(null);
-  const { setStatus } = useContext(MyContext);
+  const { setStatus, currEmp, role } = useContext(MyContext);
   const router = useRouter();
 
   const handleOpen = (event) => {
@@ -63,15 +62,15 @@ export default function AccountPopover() {
         }}
       >
         <Avatar
-          src={account.photoURL}
-          alt={account.displayName}
+          src="/assets/images/avatars/avatar_25.jpg"
+          alt={currEmp.name}
           sx={{
             width: 36,
             height: 36,
             border: (theme) => `solid 2px ${theme.palette.background.default}`,
           }}
         >
-          {account.displayName.charAt(0).toUpperCase()}
+          {currEmp.name.charAt(0).toUpperCase()}
         </Avatar>
       </IconButton>
 
@@ -92,20 +91,23 @@ export default function AccountPopover() {
       >
         <Box sx={{ my: 1.5, px: 2 }}>
           <Typography variant="subtitle2" noWrap>
-            {account.displayName}
+            {currEmp.name}
           </Typography>
           <Typography variant="body2" sx={{ color: 'text.secondary' }} noWrap>
-            {account.email}
+            {currEmp.email}
+          </Typography>
+          <Typography variant="body2" sx={{ color: 'text.secondary' }} noWrap>
+            {role}
           </Typography>
         </Box>
 
         <Divider sx={{ borderStyle: 'dashed' }} />
 
-        {MENU_OPTIONS.map((option) => (
+        {/* {MENU_OPTIONS.map((option) => (
           <MenuItem key={option.label} onClick={handleClose}>
             {option.label}
           </MenuItem>
-        ))}
+        ))} */}
 
         <Divider sx={{ borderStyle: 'dashed', m: 0 }} />
 

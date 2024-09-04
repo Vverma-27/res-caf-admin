@@ -14,7 +14,7 @@ import MyProvider, { MyContext } from './Context';
 // ----------------------------------------------------------------------
 
 const AppContainer = () => {
-  const { firstLoad, status, loading, detail } = useContext(MyContext);
+  const { firstLoad, loading } = useContext(MyContext);
   if (firstLoad || loading) {
     return (
       <Box
@@ -31,7 +31,7 @@ const AppContainer = () => {
   }
   return (
     <ThemeProvider>
-      <Router status={status} name={detail.name} />
+      <Router />
     </ThemeProvider>
   );
 };

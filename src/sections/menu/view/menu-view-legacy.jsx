@@ -56,7 +56,7 @@ export default function RestaurantMenuAdminView({
     formData.append('menu', JSON.stringify(menuArg));
     formData.append('draft', draft);
     postMenu(formData);
-    handleSubmitArg?.();
+    handleSubmitArg?.(draft);
   };
 
   const toggleEditMode = (draft) => {

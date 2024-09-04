@@ -18,21 +18,23 @@ export const RegisterPage = lazy(() => import('src/pages/register'));
 export const PaymentPage = lazy(() => import('src/pages/payment'));
 export const ProfilePage = lazy(() => import('src/pages/profile'));
 export const OrdersPage = lazy(() => import('src/pages/orders'));
+export const EmployeesPage = lazy(() => import('src/pages/employee'));
 
 // ----------------------------------------------------------------------
 
-export default function Router({ status, name }) {
+export default function Router() {
   const [authToken, setAuthToken] = useState(null);
-  const { setSocket, setOrders } = useContext(MyContext);
+  const { setSocket, setOrders, role, status, detail } = useContext(MyContext);
 
   useEffect(() => {
+    let socketConnection;
     async function fetchAuthToken() {
       if (status !== 3) return;
       try {
         const token = await auth.currentUser?.getIdToken();
-        if (!token) return;
+        if (!token || !detail.name) return;
         setAuthToken(token);
-        const socketConnection = getSocket(authToken, name);
+        socketConnection = getSocket(authToken, detail.name);
         if (!socketConnection) return;
         socketConnection.connect();
         socketConnection.on('connect', () => {
@@ -61,7 +63,13 @@ export default function Router({ status, name }) {
     }
 
     fetchAuthToken();
-  }, [status, authToken, name, setSocket, setOrders]);
+    return () => {
+      if (socketConnection) {
+        socketConnection.disconnect();
+        console.log('Disconnected from server');
+      }
+    };
+  }, [status, authToken, detail.name, setSocket, setOrders]);
   const dashboardRoutes = [
     {
       element: (
@@ -72,15 +80,21 @@ export default function Router({ status, name }) {
         </DashboardLayout>
       ),
       children: [
-        { element: <IndexPage />, index: true },
-        { path: 'user', element: <UserPage /> },
-        { path: 'profile', element: <ProfilePage /> },
-        { path: 'payments', element: <PaymentPage /> },
         { path: 'orders', element: <OrdersPage /> },
-        // { path: 'products', element: <ProductsPage /> },
         { path: 'menu', element: <MenuPage /> },
-        // { path: 'blog', element: <BlogPage /> },
+        ...((role === 'ADMIN' && [
+          { path: 'user', element: <UserPage /> },
+          { path: 'profile', element: <ProfilePage /> },
+          { path: 'payments', element: <PaymentPage /> },
+          { path: 'employees', element: <EmployeesPage /> },
+          { element: <IndexPage />, index: true },
+        ]) ||
+          (role === 'EMPLOYEE' && [
+            { path: '*', element: <Navigate to="/orders" replace /> }, // Redirect to orders if any other page is accessed
+          ]) ||
+          []),
       ],
+      // { path: 'blog', element: <BlogPage /> },
     },
   ];
 

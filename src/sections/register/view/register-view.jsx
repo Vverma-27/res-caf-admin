@@ -18,7 +18,7 @@ import { RouterLink } from 'src/routes/components';
 import { MyContext } from 'src/Context';
 import { bgGradient } from 'src/theme/css';
 import { auth } from 'src/services/firebase';
-import { getStatus, createRestaurant } from 'src/services/api';
+import { createRestaurant } from 'src/services/api';
 
 import Logo from 'src/components/logo';
 import Iconify from 'src/components/iconify';
@@ -31,20 +31,21 @@ export default function RegisterView() {
 
   const [showPassword, setShowPassword] = useState(false);
   const [name, setName] = useState('');
+  const [personName, setPersonName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const { setLoading, setStatus } = useContext(MyContext);
+  const { setStatus } = useContext(MyContext);
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       const fbResponse = await createUserWithEmailAndPassword(auth, email, password);
       console.log('🚀 ~ handleSubmit ~ fbResponse:', fbResponse);
-      const response = await createRestaurant(name, fbResponse.user.accessToken);
+      const response = await createRestaurant(name, personName, email, fbResponse.user.accessToken);
       console.log('🚀 ~ handleSubmit ~ response:', response);
-      setLoading(true);
-      const { status } = await getStatus(fbResponse.user.accessToken);
-      setStatus(status);
-      setLoading(false);
+      // setLoading(true);
+      // const { status } = await getStatus(fbResponse.user.accessToken);
+      setStatus(response.status);
+      // setLoading(false);
       router.push('/onboarding');
     } catch (error) {
       alert(error.message);
@@ -65,6 +66,15 @@ export default function RegisterView() {
             setName(e.target.value);
           }}
           value={name}
+        />
+        <TextField
+          name="contact-name"
+          label="Contact Person Name"
+          required
+          onChange={(e) => {
+            setPersonName(e.target.value);
+          }}
+          value={personName}
         />
         <TextField
           name="email"

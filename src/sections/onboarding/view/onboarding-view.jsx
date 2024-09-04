@@ -5,11 +5,11 @@ import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
 import Step from '@mui/material/Step';
 import Stack from '@mui/material/Stack';
-import Button from '@mui/material/Button';
+// import Button from '@mui/material/Button';
 import Divider from '@mui/material/Divider';
 import Stepper from '@mui/material/Stepper';
 import StepLabel from '@mui/material/StepLabel';
-import LoadingButton from '@mui/lab/LoadingButton';
+// import LoadingButton from '@mui/lab/LoadingButton';
 import { alpha, useTheme } from '@mui/material/styles';
 
 import { useRouter } from 'src/routes/hooks';
@@ -32,12 +32,13 @@ export default function OnboardingView({ status }) {
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
   };
 
-  const handlePrevStep = () => {
-    setActiveStep((prevActiveStep) => prevActiveStep - 1);
-  };
+  // const handlePrevStep = () => {
+  //   setActiveStep((prevActiveStep) => prevActiveStep - 1);
+  // };
 
-  const handleNext = () => {
+  const handleNext = (draft) => {
     // Handle form submission based on activeStep
+    if (draft) return;
     if (activeStep === steps.length - 1) {
       // Final step, handle menu completion
       router.push('/');
@@ -100,7 +101,7 @@ export default function OnboardingView({ status }) {
 
           <Divider sx={{ my: 3 }} />
 
-          <Stack direction="row" justifyContent="space-between">
+          {/* <Stack direction="row" justifyContent="space-between">
             {activeStep !== 0 && <Button onClick={handlePrevStep}>Back</Button>}
 
             <LoadingButton
@@ -112,7 +113,7 @@ export default function OnboardingView({ status }) {
             >
               {activeStep === steps.length - 1 ? 'Finish' : 'Next'}
             </LoadingButton>
-          </Stack>
+          </Stack> */}
         </Card>
       </Stack>
     </Box>

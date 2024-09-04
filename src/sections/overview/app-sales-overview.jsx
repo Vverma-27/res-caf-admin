@@ -1,14 +1,20 @@
-import PropTypes from 'prop-types';
-
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
 import CardHeader from '@mui/material/CardHeader';
+import { Select, MenuItem, InputLabel, FormControl } from '@mui/material';
 
 import Chart, { useChart } from 'src/components/chart';
 
 // ----------------------------------------------------------------------
 
-export default function AppWebsiteVisits({ title, subheader, chart, ...other }) {
+export default function AppSalesOverview({
+  title,
+  subheader,
+  timeSpan,
+  chart,
+  setTimeSpan,
+  ...other
+}) {
   const { labels, colors, series, options } = chart;
 
   const chartOptions = useChart({
@@ -31,7 +37,7 @@ export default function AppWebsiteVisits({ title, subheader, chart, ...other }) 
       y: {
         formatter: (value) => {
           if (typeof value !== 'undefined') {
-            return `${value.toFixed(0)} visits`;
+            return `${value.toFixed(0)}`;
           }
           return value;
         },
@@ -42,7 +48,26 @@ export default function AppWebsiteVisits({ title, subheader, chart, ...other }) 
 
   return (
     <Card {...other}>
-      <CardHeader title={title} subheader={subheader} />
+      <CardHeader
+        title={title}
+        subheader={
+          <Box sx={{ display: 'flex', alignItems: 'center' }}>
+            <FormControl sx={{ mr: 2, minWidth: 120 }}>
+              <InputLabel id="timespan-select-label">Time Span</InputLabel>
+              <Select
+                labelId="timespan-select-label"
+                value={timeSpan}
+                onChange={(e) => setTimeSpan(e.target.value)}
+                label="Time Span"
+              >
+                <MenuItem value="weekly">Weekly</MenuItem>
+                <MenuItem value="monthly">Monthly</MenuItem>
+                <MenuItem value="yearly">Yearly</MenuItem>
+              </Select>
+            </FormControl>
+          </Box>
+        }
+      />
 
       <Box sx={{ p: 3, pb: 1 }}>
         <Chart
@@ -57,9 +82,3 @@ export default function AppWebsiteVisits({ title, subheader, chart, ...other }) 
     </Card>
   );
 }
-
-AppWebsiteVisits.propTypes = {
-  chart: PropTypes.object,
-  subheader: PropTypes.string,
-  title: PropTypes.string,
-};

@@ -12,7 +12,7 @@ import Iconify from 'src/components/iconify';
 
 // ----------------------------------------------------------------------
 
-export default function UserTableRow({ name, handleClick, number, email }) {
+export default function UserTableRow({ name, handleClick, number, spent, dishes, email }) {
   const [open, setOpen] = useState(null);
 
   const handleCloseMenu = () => {
@@ -31,6 +31,15 @@ export default function UserTableRow({ name, handleClick, number, email }) {
         </TableCell>
         <TableCell sx={{ padding: '16px' }}>{number}</TableCell>
         <TableCell sx={{ padding: '16px' }}>{email}</TableCell>
+        <TableCell sx={{ padding: '16px' }}>
+          {dishes.map((e) => (
+            <div>
+              {`${e.dishName}: ${e.timesOrdered + (e.timesOrdered > 1 ? ' times' : ' time')}`}
+              <br />
+            </div>
+          ))}
+        </TableCell>
+        <TableCell sx={{ padding: '16px' }}>₹{spent}</TableCell>
       </TableRow>
 
       <Popover

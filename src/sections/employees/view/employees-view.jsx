@@ -1,32 +1,36 @@
 import { useState, useEffect } from 'react';
 
 import Card from '@mui/material/Card';
+import { Button } from '@mui/material';
 import Stack from '@mui/material/Stack';
 import Table from '@mui/material/Table';
+import { Add } from '@mui/icons-material';
 import Container from '@mui/material/Container';
 import TableBody from '@mui/material/TableBody';
 import Typography from '@mui/material/Typography';
 import TableContainer from '@mui/material/TableContainer';
 import TablePagination from '@mui/material/TablePagination';
 
-// import { clients } from 'src/_mock/user';
+// import { employees } from 'src/_mock/user';
 
-import { getClients } from 'src/services/api';
+import { useRouter } from 'src/routes/hooks';
+
+import { getEmployees, createEmployee, toggleIsActiveEmployee } from 'src/services/api';
 
 import Scrollbar from 'src/components/scrollbar';
 
-import UserTableRow from '../user-table-row';
-import UserTableHead from '../user-table-head';
+import UserTableRow from '../employee-table-row';
+import UserTableHead from '../employee-table-head';
 // import TableEmptyRows from '../table-empty-rows';
-import UserTableToolbar from '../user-table-toolbar';
 import { applyFilter, getComparator } from '../utils';
+import UserTableToolbar from '../employee-table-toolbar';
 
 // ----------------------------------------------------------------------
 
-export default function UserPage() {
+export default function EmployeesPage() {
   const [page, setPage] = useState(0);
-  const [clients, setClients] = useState([]);
-  console.log('🚀 ~ UserPage ~ clients:', clients);
+  const [employees, setEmployees] = useState([]);
+  console.log('🚀 ~ EmployeePage ~ employees:', employees);
 
   const [order, setOrder] = useState('asc');
 
@@ -37,14 +41,20 @@ export default function UserPage() {
   const [filterName, setFilterName] = useState('');
 
   const [rowsPerPage, setRowsPerPage] = useState(5);
+  const router = useRouter();
   useEffect(() => {
     const func = async () => {
-      const { clients: clientsArg } = await getClients(page, rowsPerPage);
-      console.log('🚀 ~ useEffect ~ clients:', clientsArg);
-      setClients(clientsArg);
+      const { employees: employeeArg, err } = await getEmployees(page, rowsPerPage);
+      if (err) {
+        alert(err);
+        router.push('/');
+        return;
+      }
+      console.log('🚀 ~ useEffect ~ employees:', employeeArg);
+      setEmployees(employeeArg);
     };
     func();
-  }, [page, rowsPerPage]);
+  }, [page, rowsPerPage, router]);
 
   const handleSort = (event, id) => {
     const isAsc = orderBy === id && order === 'asc';
@@ -56,29 +66,11 @@ export default function UserPage() {
 
   const handleSelectAllClick = (event) => {
     if (event.target.checked) {
-      const newSelecteds = clients.map((n) => n.name);
+      const newSelecteds = employees.map((n) => n.name);
       setSelected(newSelecteds);
       return;
     }
     setSelected([]);
-  };
-
-  const handleClick = (event, name) => {
-    const selectedIndex = selected.indexOf(name);
-    let newSelected = [];
-    if (selectedIndex === -1) {
-      newSelected = newSelected.concat(selected, name);
-    } else if (selectedIndex === 0) {
-      newSelected = newSelected.concat(selected.slice(1));
-    } else if (selectedIndex === selected.length - 1) {
-      newSelected = newSelected.concat(selected.slice(0, -1));
-    } else if (selectedIndex > 0) {
-      newSelected = newSelected.concat(
-        selected.slice(0, selectedIndex),
-        selected.slice(selectedIndex + 1)
-      );
-    }
-    setSelected(newSelected);
   };
 
   const handleChangePage = (event, newPage) => {
@@ -95,8 +87,17 @@ export default function UserPage() {
     setFilterName(event.target.value);
   };
 
+  const handleNewEmployee = async () => {
+    const name = prompt('Enter name of employee');
+    const email = prompt('Enter email of employee');
+    const password = prompt('Enter password of employee');
+    const res = await createEmployee(name, email, password);
+    if (res.acknowledged)
+      setEmployees((e) => [...e, { name, email, password, role: 'EMPLOYEE', _id: res.insertedId }]);
+  };
+
   const dataFiltered = applyFilter({
-    inputData: clients,
+    inputData: employees,
     comparator: getComparator(order, orderBy),
     filterName,
   });
@@ -104,8 +105,11 @@ export default function UserPage() {
   return (
     <Container>
       <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
-        <Typography variant="h4">Clients</Typography>
+        <Typography variant="h4">Employees</Typography>
       </Stack>
+      <Button variant="contained" color="inherit" startIcon={<Add />} onClick={handleNewEmployee}>
+        New Employee
+      </Button>
 
       <Card>
         <UserTableToolbar
@@ -120,15 +124,16 @@ export default function UserPage() {
               <UserTableHead
                 order={order}
                 orderBy={orderBy}
-                rowCount={clients.length}
+                rowCount={employees.length}
                 onRequestSort={handleSort}
                 onSelectAllClick={handleSelectAllClick}
                 headLabel={[
                   { id: 'name', label: 'Name' },
-                  { id: 'number', label: 'Contact Number' },
                   { id: 'email', label: 'Email' },
-                  { id: 'freq_dishes', label: 'Frequent Dishes' },
-                  { id: 'spen', label: 'Amount Spent' },
+                  { id: 'password', label: 'Password' },
+                  { id: 'role', label: 'Role' },
+                  { id: 'status', label: 'Status' },
+                  { id: 'action', label: 'Action' },
                 ]}
               />
               <TableBody>
@@ -136,19 +141,28 @@ export default function UserPage() {
                   .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                   .map((row) => (
                     <UserTableRow
-                      key={row.id}
-                      name={row.clientName}
-                      number={row.clientNumber}
-                      handleClick={handleClick}
-                      email={row.clientEmail}
-                      dishes={row.dishes}
-                      spent={row.amountSpent}
+                      key={row._id}
+                      name={row.name}
+                      handleClick={async () => {
+                        const res = await toggleIsActiveEmployee(row._id, !row.active);
+                        if (res.employee)
+                          setEmployees((e) => [
+                            ...e.map((em) =>
+                              em._id === row._id ? { ...row, active: !row.active } : em
+                            ),
+                          ]);
+                      }}
+                      role={row.role}
+                      email={row.email}
+                      active={row.active}
+                      password={row.password}
+                      action={`${row.active ? 'Disable' : 'Enable'}`}
                     />
                   ))}
 
                 {/* <TableEmptyRows
                   height={77}
-                  emptyRows={emptyRows(page, rowsPerPage, clients.length)}
+                  emptyRows={emptyRows(page, rowsPerPage, employees.length)}
                 /> */}
               </TableBody>
             </Table>
@@ -158,7 +172,7 @@ export default function UserPage() {
         <TablePagination
           page={page}
           component="div"
-          count={clients.length}
+          count={employees.length}
           rowsPerPage={rowsPerPage}
           onPageChange={handleChangePage}
           rowsPerPageOptions={[5, 10, 25]}
