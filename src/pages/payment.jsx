@@ -8,7 +8,7 @@ export default function PaymentPage() {
   return (
     <>
       <Helmet>
-        <title> Payment | Minimal UI </title>
+        <title> Payment | QDine </title>
       </Helmet>
 
       <PaymentView />

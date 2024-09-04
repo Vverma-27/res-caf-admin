@@ -8,7 +8,7 @@ export default function OrdersPage() {
   return (
     <>
       <Helmet>
-        <title> Login | Minimal UI </title>
+        <title> Orders | QDine </title>
       </Helmet>
 
       <OrdersView />

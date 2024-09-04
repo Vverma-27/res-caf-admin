@@ -9,7 +9,7 @@ export default function OnboardingPage({ status }) {
   return (
     <>
       <Helmet>
-        <title> Login | Minimal UI </title>
+        <title> Onboarding | QDine </title>
       </Helmet>
 
       <OnboardingView status={status} />

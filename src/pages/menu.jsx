@@ -8,7 +8,7 @@ export default function MenuPage() {
   return (
     <>
       <Helmet>
-        <title> Menu | Minimal UI </title>
+        <title> Menu | QDine </title>
       </Helmet>
 
       <MenuView />

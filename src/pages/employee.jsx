@@ -8,7 +8,7 @@ export default function EmployeesPage() {
   return (
     <>
       <Helmet>
-        <title> Employee | Minimal UI </title>
+        <title> Employee | QDine </title>
       </Helmet>
 
       <EmployeesView />
