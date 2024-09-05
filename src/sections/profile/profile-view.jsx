@@ -94,7 +94,11 @@ const PaymentView = () => {
               marginTop: '5vh',
             }}
           >
-            <QRCodeSVG value={`https://${details.name}.resandcaf.online?table=${uniqueId}`} />
+            <QRCodeSVG
+              value={`https://${details.name
+                .toLowerCase()
+                .replace(/[^a-z]/g, '')}.resandcaf.online?table=${uniqueId}`}
+            />
             <Button onClick={handleDownload}>Download</Button>
           </div>
         )}
