@@ -28,9 +28,9 @@ export default function AppSalesOverview({
       type: series.map((i) => i.fill),
     },
     labels,
-    xaxis: {
-      type: 'datetime',
-    },
+    // xaxis: {
+    //   type: 'datetime',
+    // },
     tooltip: {
       shared: true,
       intersect: false,

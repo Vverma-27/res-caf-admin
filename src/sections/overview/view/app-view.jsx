@@ -76,16 +76,19 @@ export default function AppView() {
     const currentDate = new Date();
 
     if (timeSpan === 'weekly') {
+      // Generate labels for the last 7 days
       for (let i = 6; i >= 0; i -= 1) {
         const date = new Date(currentDate.getTime() - i * 24 * 60 * 60 * 1000);
         labels.push(date.toLocaleDateString('en-US')); // Format: MM/DD/YYYY
       }
     } else if (timeSpan === 'monthly') {
+      // Generate labels for the last 30 days
       for (let i = 29; i >= 0; i -= 1) {
         const date = new Date(currentDate.getTime() - i * 24 * 60 * 60 * 1000);
-        labels.push(date.toLocaleDateString('en-US'));
+        labels.push(date.toLocaleDateString('en-US')); // Format: MM/DD/YYYY
       }
     } else if (timeSpan === 'yearly') {
+      // Generate labels for the last 12 months, including the current month
       for (let i = 11; i >= 0; i -= 1) {
         const date = new Date(currentDate.getFullYear(), currentDate.getMonth() - i, 1);
         labels.push(date.toLocaleDateString('en-US', { year: 'numeric', month: 'short' })); // Format: Jan 2023
@@ -94,6 +97,7 @@ export default function AppView() {
 
     return labels;
   };
+
   return (
     <Container maxWidth="xl">
       <Typography variant="h4" sx={{ mb: 5 }}>
@@ -105,6 +109,7 @@ export default function AppView() {
           <AppWidgetSummary
             title="Current Week Sales"
             total={weeklySales.total}
+            money
             color="success"
             icon={<img alt="icon" src="/assets/icons/glass/ic_glass_bag.png" />}
           />
@@ -132,6 +137,7 @@ export default function AppView() {
           <AppWidgetSummary
             title="Average Order Value"
             total={avgOrderValue}
+            money
             color="error"
             icon={<img alt="icon" src="/assets/icons/glass/ic_glass_message.png" />}
           />
@@ -144,6 +150,10 @@ export default function AppView() {
             timeSpan={timeSpan}
             chart={{
               labels: generateLabels(),
+              xaxis: {
+                type: 'datetime',
+                categories: generateLabels(), // Pass the generated labels here
+              },
               series: [
                 {
                   name: 'Sales',
